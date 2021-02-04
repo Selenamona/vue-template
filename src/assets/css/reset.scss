@@ -1,0 +1,43 @@
+/**
+    样式重置
+ */
+
+ body, div, span, header, footer, nav, section, aside, article, ul, dl, dt, dd, li, a, p, h1, h2, h3, h4, h5, h6, i, b, textarea, button, input, select, figure, figcaption {
+  font-family: Microsoft YaHei,tahoma,arial,Hiragino Sans GB,sans-serif;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-style: normal;
+  text-decoration: none;
+  border: none;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased; // 对字体进行抗锯齿渲染可以使字体看起来会更清晰舒服
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+  color: #333;
+  outline-style: none;
+  &:focus {
+      outline: none;
+  }
+}
+
+a {
+  &:link, &:visited {
+      text-decoration: none;
+      color: #666;
+  }
+}
+
+input[type="button"],
+input[type="submit"],
+input[type="search"],
+input[type="reset"],
+input[type="text"],
+input[type="password"],
+textarea {
+  -webkit-appearance: none;
+}
+input::-webkit-search-cancel-button{
+  display: none;
+}

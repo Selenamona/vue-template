@@ -1,28 +1,19 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
 
+// 自动加载router文件夹下的所有js文件
+const context = require.context("@/router", false, /\.js$/);
+let routesConfig = [];
+context.keys().forEach(v => {
+  if (v === "./index.js") {
+    return;
+  }
+  const obj = context(v);
+  routesConfig = routesConfig.concat(obj[Object.keys(obj)[0]]);
+});
 Vue.use(VueRouter);
 
-const routes = [
-  {
-    path: "/",
-    name: "Home",
-    component: Home
-  },
-  {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
-  }
-];
-
 const router = new VueRouter({
-  routes
+  routes: routesConfig
 });
-
 export default router;

@@ -1,4 +1,4 @@
-# yx-app-management
+# vue-cli4.0 + iview4.0 template
 
 ## Project setup
 ```
