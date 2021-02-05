@@ -51,7 +51,6 @@ export default {
     setTotal(total, list) {
       this.cityTotal = total;
       this.selectCities = list;
-      console.log(this.selectCities, "this.selectCities");
     },
     // 切换选择城市方式
     selectTab(tab) {
@@ -67,7 +66,6 @@ export default {
           });
         });
       });
-      console.log(this.cityData1, this.cityData2);
     },
     // 数据初始化
     initData() {

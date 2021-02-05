@@ -58,7 +58,6 @@ export default {
   watch: {
     source: {
       handler() {
-        console.log(this.source, "source");
         let k = 0;
         const newArray = [];
         while (k < this.source.length) {
