@@ -13,7 +13,7 @@ module.exports = {
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   chainWebpack: config => {
     config.plugin("html").tap(args => {
-      args[0].title = "车来财合伙人";
+      args[0].title = "易鑫APP";
       return args;
     });
   },
