@@ -8,7 +8,7 @@
       <div class="province">{{ ele.name }}</div>
       <div class="itemWrap">
         <div class="cityAll">
-          <Checkbox v-model="ele.checked" @on-change="selectItem(ele)">
+          <Checkbox v-model="ele.checked" @on-change="selectItem(index)">
             <span class="city">该省份下所有城市</span>
           </Checkbox>
         </div>
@@ -35,6 +35,24 @@ export default {
       allChecked: false // 是否选中全国
     };
   },
+  watch: {
+    source: {
+      handler() {
+        // 判断省市是否全选
+        this.source.forEach(ele => {
+          const itemChecked = ele.cityList.every(item => {
+            return item.checked === true;
+          });
+          ele.checked = itemChecked;
+        });
+        // 判断全国是否选中
+        this.allChecked = this.source.every(item => {
+          return item.checked === true;
+        });
+      },
+      immediate: true
+    }
+  },
   methods: {
     // 全国选中/取消
     selectAll() {
@@ -50,10 +68,12 @@ export default {
       this.$emit("setTotal", total, this.source);
     },
     // 省份全选/取消
-    selectItem(ele) {
-      ele.cityList.forEach(item => {
-        item.checked = ele.checked;
+    selectItem(index) {
+      const ls = this.source[index];
+      ls.cityList.forEach(item => {
+        item.checked = ls.checked;
       });
+      this.$set(this.source, index, ls);
       // 设置全国是否全选
       this.allChecked = this.source.every(item => {
         return item.checked === true;
