@@ -39,9 +39,6 @@ export default {
   props: {
     source: {
       type: Array
-    },
-    selectCities: {
-      type: Array
     }
   },
   data() {
@@ -58,43 +55,30 @@ export default {
       return this.cityList[this.activeTab];
     }
   },
-  created() {
-    this.setCitySelect();
-  },
-  methods: {
-    // 反显选中城市
-    setCitySelect() {
-      this.selectCities.forEach(ele => {
-        ele.list.forEach(item => {
-          this.source.forEach(k => {
-            k.cityList.forEach(j => {
-              if (item.regionId === j.cityId) {
-                j.checked = item.checked;
-              }
-            });
+  watch: {
+    source: {
+      handler() {
+        console.log(this.source, "source");
+        let k = 0;
+        const newArray = [];
+        while (k < this.source.length) {
+          newArray.push(this.source.slice(k, (k += 5)));
+        }
+        this.cityList = newArray; // 初始化城市数据
+        const ls = [];
+        newArray.forEach((item, index) => {
+          ls[index] = [];
+          item.forEach(ele => {
+            ls[index].push(ele.groupName);
           });
         });
-      });
-      this.initData();
-    },
-    // 城市初始化
-    initData() {
-      let k = 0;
-      const newArray = [];
-      while (k < this.source.length) {
-        newArray.push(this.source.slice(k, (k += 5)));
-      }
-      this.cityList = newArray; // 初始化城市数据
-      const ls = [];
-      newArray.forEach((item, index) => {
-        ls[index] = [];
-        item.forEach(ele => {
-          ls[index].push(ele.groupName);
-        });
-      });
-      this.wrapHeight = ls.length * 121; // 计算展示高度
-      this.letterList = ls; // 初始化字母列表
-    },
+        this.wrapHeight = ls.length * 121; // 计算展示高度
+        this.letterList = ls; // 初始化字母列表
+      },
+      immediate: true
+    }
+  },
+  methods: {
     // 选择左侧Tab
     selectTab(index) {
       this.activeTab = index;
@@ -112,7 +96,7 @@ export default {
           });
         });
       });
-      this.$emit("setTotal", this.allChecked ? total : 0);
+      this.$emit("setTotal", this.allChecked ? total : 0, this.source);
     },
     // 选择单个城市
     selectChange() {
@@ -127,7 +111,7 @@ export default {
           });
         });
       });
-      this.$emit("setTotal", total);
+      this.$emit("setTotal", total, this.source);
     }
   }
 };

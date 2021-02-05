@@ -13,7 +13,6 @@
           <CityByProvince
             v-if="activeTab === 0"
             :source="cityData1"
-            :selectCities="selectCities"
             @setTotal="setTotal"
           />
         </TabPane>
@@ -21,7 +20,6 @@
           <CityByLetter
             v-if="activeTab === 1"
             :source="cityData2"
-            :selectCities="selectCities"
             @setTotal="setTotal"
           />
         </TabPane>
@@ -53,10 +51,23 @@ export default {
     setTotal(total, list) {
       this.cityTotal = total;
       this.selectCities = list;
+      console.log(this.selectCities, "this.selectCities");
     },
     // 切换选择城市方式
     selectTab(tab) {
-      console.log(tab);
+      const key = tab === 0 ? "cityData1" : "cityData2";
+      this.selectCities.forEach(ele => {
+        ele.cityList.forEach(item => {
+          this[key].forEach(k => {
+            k.cityList.forEach(j => {
+              if (j.cityAreaId === item.cityAreaId) {
+                j.checked = item.checked; // 用于反显城市选中状态
+              }
+            });
+          });
+        });
+      });
+      console.log(this.cityData1, this.cityData2);
     },
     // 数据初始化
     initData() {

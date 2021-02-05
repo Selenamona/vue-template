@@ -12,7 +12,7 @@
             <span class="city">该省份下所有城市</span>
           </Checkbox>
         </div>
-        <div class="item" v-for="(item, k) in ele.list" :key="k">
+        <div class="item" v-for="(item, k) in ele.cityList" :key="k">
           <Checkbox v-model="item.checked" @on-change="selectChange(index)">
             <span class="city">{{ item.name }}</span>
           </Checkbox>
@@ -32,8 +32,7 @@ export default {
   },
   data() {
     return {
-      allChecked: false, // 是否选中全国
-      isRefresh: false
+      allChecked: false // 是否选中全国
     };
   },
   methods: {
@@ -43,7 +42,7 @@ export default {
       let total = 0;
       this.source.forEach(ele => {
         ele.checked = this.allChecked;
-        ele.list.forEach(item => {
+        ele.cityList.forEach(item => {
           item.checked = this.allChecked;
           total += 1;
         });
@@ -52,7 +51,7 @@ export default {
     },
     // 省份全选/取消
     selectItem(ele) {
-      ele.list.forEach(item => {
+      ele.cityList.forEach(item => {
         item.checked = ele.checked;
       });
       // 设置全国是否全选
@@ -65,7 +64,7 @@ export default {
     selectChange(pIndex) {
       // 设置省份是否全选
       const ls = this.source[pIndex];
-      const isCheck = ls["list"].every(item => {
+      const isCheck = ls["cityList"].every(item => {
         return item.checked === true;
       });
       ls.checked = isCheck;
@@ -80,7 +79,7 @@ export default {
     countNum() {
       let total = 0;
       this.source.forEach(ele => {
-        ele.list.forEach(item => {
+        ele.cityList.forEach(item => {
           if (item.checked) {
             total += 1;
           }
