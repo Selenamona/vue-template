@@ -4,8 +4,13 @@
 
 export const installmentPlan = [
   {
-    path: "/",
+    path: "/addCity",
     name: "AddCity",
     component: () => import("../views/citiesManage/AddCity.vue")
+  },
+  {
+    path: "/",
+    name: "AddCar",
+    component: () => import("../views/carTypeManage/AddCarType.vue")
   }
 ];

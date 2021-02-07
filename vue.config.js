@@ -53,11 +53,11 @@ module.exports = {
     port: 8080,
     // 设置代理
     proxy: {
-      "/clue-center-platform": {
+      "/phenix-base-api": {
         target: "https://yxapp.uat.yixincapital.com",
         changeOrigin: true,
         pathRewrite: {
-          "^/clue-center-platform": "/clue-center-platform"
+          "^/phenix-base-api": "/phenix-base-api"
         }
       }
     },
