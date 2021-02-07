@@ -1,12 +1,14 @@
 <!-- 添加车型包 -->
 <template>
   <div class="AddCarType">
-    <CarSelect />
+    <!-- <CarSelect /> -->
+    <CarTree />
   </div>
 </template>
 
 <script>
 import CarSelect from "./components/carSelect";
+import CarTree from "./components/carTree";
 export default {
   name: "AddCarType",
   data() {
@@ -14,7 +16,7 @@ export default {
   },
 
   methods: {},
-  components: { CarSelect }
+  components: { CarSelect, CarTree }
 };
 </script>
 <style lang="scss" scoped></style>

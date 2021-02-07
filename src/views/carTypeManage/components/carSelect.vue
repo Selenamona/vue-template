@@ -16,7 +16,11 @@
       <!-- 主品牌 -->
       <div class="brands">
         <div class="item flexItem" v-for="item in brandList" :key="item.id">
-          <Checkbox class="itemCheck" v-model="item.checked"></Checkbox>
+          <Checkbox
+            class="itemCheck"
+            v-model="item.checked"
+            @on-change="brandChange"
+          ></Checkbox>
           <span
             :class="['name', { active: activeBrand === item.id }]"
             @click="getSecondList(item)"
@@ -34,10 +38,14 @@
             v-for="ele in item.modelDTOList"
             :key="ele.entityId"
           >
-            <Checkbox class="itemCheck" v-model="ele.checked"></Checkbox>
+            <Checkbox
+              class="itemCheck"
+              v-model="ele.checked"
+              @on-change="carSeriesChange($event, item)"
+            ></Checkbox>
             <span
               :class="['name', { active: activeSeries === ele.entityId }]"
-              @click="getThirdList(ele.entityId)"
+              @click="getThirdList(ele)"
               >{{ ele.name }}</span
             >
           </div>
@@ -49,11 +57,20 @@
           <Checkbox v-model="item.checked"></Checkbox>
           <span class="title">{{ item.year }}</span>
           <div class="subItem" v-for="ele in item.vehicleList" :key="ele.id">
-            <Checkbox class="itemCheck" v-model="ele.checked"></Checkbox>
+            <Checkbox
+              class="itemCheck"
+              v-model="ele.checked"
+              @on-change="carTypeChange(item)"
+            ></Checkbox>
             <span class="name">{{ ele.name }}</span>
           </div>
         </div>
       </div>
+    </div>
+    <div class="handleBtn">
+      <div>已选个数：{{ total }}</div>
+      <Button type="primary">确定</Button>
+      <Button>取消</Button>
     </div>
   </div>
 </template>
@@ -70,7 +87,9 @@ export default {
       thirdList: [], // 车款
       activeIndex: 0,
       activeBrand: "",
-      activeSeries: ""
+      activeSeries: "",
+      // total: 0,
+      selectCars: {} // 选中的车款集合
     };
   },
   created() {
@@ -82,17 +101,81 @@ export default {
         this.firstList[this.activeIndex] &&
         this.firstList[this.activeIndex]["mainBrandList"]
       );
-    }
-  },
-  watch: {
-    brandList: {
-      handler() {
-        console.log(this.brandList, "brandList");
-      },
-      deep: true
+    },
+    total() {
+      return 0;
     }
   },
   methods: {
+    // 一级-品牌选择
+    brandChange(isCheck) {
+      // 二级是否全选
+      this.secondList.forEach(ele => {
+        ele.checked = isCheck;
+        ele.modelDTOList.forEach(data => {
+          data.checked = isCheck; // 车系是否全选
+        });
+      });
+      // 三级是否全选
+      this.thirdList.forEach(element => {
+        element.checked = isCheck;
+        element.vehicleList.forEach(item => {
+          item.checked = isCheck;
+        });
+      });
+    },
+    // 二级-车系选择
+    carSeriesChange(isCheck, item) {
+      // 车系所属分类是否全选
+      item.checked = item.modelDTOList.every(ele => {
+        return ele.checked === true;
+      });
+      // 三级是否全选
+      this.thirdList.forEach(element => {
+        element.checked = isCheck;
+        element.vehicleList.forEach(item => {
+          item.checked = isCheck;
+        });
+      });
+      // 设置主品牌是否全选
+      this.brandList.forEach(ele => {
+        if (ele.id === this.activeBrand) {
+          ele.checked = this.secondList.every(data => {
+            return data.checked === true;
+          });
+        }
+      });
+    },
+    // 三级-车款选择
+    carTypeChange(item) {
+      // 当前车款所属年份是否全选
+      item.checked = item.vehicleList.every(ele => {
+        return ele.checked === true;
+      });
+      // 车款列表所有年份是否全选
+      const isAllChecked = this.thirdList.every(ele => {
+        return ele.checked === true;
+      });
+      this.secondList.forEach(ele => {
+        ele.modelDTOList.forEach(data => {
+          if (data.entityId === this.activeSeries) {
+            data.checked = isAllChecked ? true : false; // 车系是否全选
+            // 车系所属分类是否全选
+            ele.checked = ele.modelDTOList.every(k => {
+              return k.checked === true;
+            });
+          }
+        });
+      });
+      // 设置主品牌是否全选
+      this.brandList.forEach(ele => {
+        if (ele.id === this.activeBrand) {
+          ele.checked = this.secondList.every(data => {
+            return data.checked === true;
+          });
+        }
+      });
+    },
     // 字母筛选
     selectLetter(index) {
       this.activeIndex = index;
@@ -108,6 +191,7 @@ export default {
     // 获取二级-车系
     getSecondList(item) {
       this.activeBrand = item.id;
+      this.activeSeries = "";
       this.thirdList = [];
       this.secondList = [];
       getCarSecond({
@@ -116,10 +200,11 @@ export default {
         productType: "052500000"
       }).then(res => {
         const data = res.data.info;
+        // 品牌选中，则品牌下所有车系/车款全选
         if (item.checked) {
           data.forEach(element => {
             element.checked = true;
-            element.forEach(item => {
+            element.modelDTOList.forEach(item => {
               if (element.checked) {
                 item.checked = true;
               }
@@ -130,14 +215,26 @@ export default {
       });
     },
     // 获取三级-车款
-    getThirdList(id) {
-      this.activeSeries = id;
+    getThirdList(item) {
+      this.activeSeries = item.entityId;
       getCarThree({
-        id: id,
+        id: item.entityId,
         productCode: "M000005",
         productType: "052500000"
       }).then(res => {
-        this.thirdList = res.data.info;
+        const data = res.data.info;
+        // 车系选中，则车系下所有车款全选
+        if (item.checked) {
+          data.forEach(element => {
+            element.checked = true;
+            element.vehicleList.forEach(item => {
+              if (element.checked) {
+                item.checked = true;
+              }
+            });
+          });
+        }
+        this.thirdList = data;
       });
     }
   }
