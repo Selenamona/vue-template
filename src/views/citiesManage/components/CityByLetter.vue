@@ -16,16 +16,16 @@
     </div>
     <!-- 城市选择 -->
     <div class="rightMain">
-      <Button :type="allChecked ? 'primary' : 'default'" @click="selectAll">
+      <el-button :type="allChecked ? 'primary' : 'default'" @click="selectAll">
         全国
-      </Button>
+      </el-button>
       <div class="letterItem" v-for="(ele, index) in activeList" :key="index">
         <div class="title">{{ ele.groupName }}</div>
         <div class="itemWrap">
           <div class="item" v-for="(item, k) in ele.cityList" :key="k">
-            <Checkbox v-model="item.checked" @on-change="selectChange">
+            <el-checkbox v-model="item.checked" @on-change="selectChange">
               <span class="city">{{ item.cityName }}</span>
-            </Checkbox>
+            </el-checkbox>
           </div>
         </div>
       </div>

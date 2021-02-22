@@ -16,11 +16,11 @@
       <!-- 主品牌 -->
       <div class="brands">
         <div class="item flexItem" v-for="item in brandList" :key="item.id">
-          <Checkbox
+          <el-checkbox
             class="itemCheck"
             v-model="item.checked"
-            @on-change="brandChange"
-          ></Checkbox>
+            @change="brandChange(item)"
+          ></el-checkbox>
           <span
             :class="['name', { active: activeBrand === item.id }]"
             @click="getSecondList(item)"
@@ -31,18 +31,18 @@
       <!-- 车系 -->
       <div class="carSeries">
         <div class="item" v-for="item in secondList" :key="item.entityId">
-          <Checkbox v-model="item.checked"></Checkbox>
+          <el-checkbox v-model="item.checked"></el-checkbox>
           <span class="title">{{ item.name }}</span>
           <div
             class="subItem"
             v-for="ele in item.modelDTOList"
             :key="ele.entityId"
           >
-            <Checkbox
+            <el-checkbox
               class="itemCheck"
               v-model="ele.checked"
-              @on-change="carSeriesChange($event, item)"
-            ></Checkbox>
+              @change="carSeriesChange($event, item)"
+            ></el-checkbox>
             <span
               :class="['name', { active: activeSeries === ele.entityId }]"
               @click="getThirdList(ele)"
@@ -54,23 +54,23 @@
       <!-- 车款 -->
       <div class="carType">
         <div class="item" v-for="item in thirdList" :key="item.year">
-          <Checkbox v-model="item.checked"></Checkbox>
+          <el-checkbox v-model="item.checked"></el-checkbox>
           <span class="title">{{ item.year }}</span>
           <div class="subItem" v-for="ele in item.vehicleList" :key="ele.id">
-            <Checkbox
+            <el-checkbox
               class="itemCheck"
               v-model="ele.checked"
-              @on-change="carTypeChange(item)"
-            ></Checkbox>
+              @change="carTypeChange(item)"
+            ></el-checkbox>
             <span class="name">{{ ele.name }}</span>
           </div>
         </div>
       </div>
     </div>
     <div class="handleBtn">
-      <div>已选个数：{{ total }}</div>
-      <Button type="primary">确定</Button>
-      <Button>取消</Button>
+      <div class="tip">已选个数：{{ total }}</div>
+      <el-button type="primary" style="margin-right:8px">确定</el-button>
+      <el-button>取消</el-button>
     </div>
   </div>
 </template>
@@ -106,9 +106,20 @@ export default {
       return 0;
     }
   },
+  watch: {
+    selectCars: {
+      handle() {
+        console.log(this.selectCars);
+      },
+      deep: true
+    }
+  },
   methods: {
     // 一级-品牌选择
-    brandChange(isCheck) {
+    brandChange(item) {
+      console.log("🚀 主品牌选中", item);
+      this.selectCars[item.id] = {};
+      const isCheck = item.checked;
       // 二级是否全选
       this.secondList.forEach(ele => {
         ele.checked = isCheck;
@@ -294,6 +305,11 @@ export default {
           background: #e6f7ff;
         }
       }
+    }
+  }
+  .handleBtn {
+    .tip {
+      margin-bottom: 10px;
     }
   }
 }

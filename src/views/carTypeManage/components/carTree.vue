@@ -1,7 +1,15 @@
 <!-- 选择车型 -->
 <template>
   <div class="carTree">
-    <Tree :data="source" :load-data="loadData" show-checkbox></Tree>
+    <Tree
+      ref="tree"
+      :data="source"
+      :load-data="loadData"
+      show-checkbox
+      expand-node
+      @on-check-change="onCheckChange"
+    ></Tree>
+    <el-button @click="onConfirm">确定</el-button>
   </div>
 </template>
 
@@ -18,6 +26,19 @@ export default {
     this.getFirstList();
   },
   methods: {
+    onConfirm() {
+      console.log("----------");
+      console.log(this.$refs.tree.getCheckedNodes(), "getCheckedNodes");
+      console.log(this.$refs.tree.getSelectedNodes(), "getSelectedNodes");
+      console.log(
+        this.$refs.tree.getCheckedAndIndeterminateNodes(),
+        "getCheckedAndIndeterminateNodes"
+      );
+    },
+    onCheckChange(arr, current) {
+      console.log(arr, current);
+    },
+    // 异步加载数据
     loadData(item, callback) {
       if (item.origin === "brand") {
         this.getSecondList(item.id, callback); // 获取车系

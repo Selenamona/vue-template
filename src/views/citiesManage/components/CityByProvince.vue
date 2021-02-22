@@ -1,21 +1,21 @@
 <!-- 按省份选择城市 -->
 <template>
   <div class="CityByProvince">
-    <Button :type="allChecked ? 'primary' : 'default'" @click="selectAll">
+    <el-button :type="allChecked ? 'primary' : 'default'" @click="selectAll">
       全国
-    </Button>
+    </el-button>
     <div class="provinceItem" v-for="(ele, index) in source" :key="index">
       <div class="province">{{ ele.name }}</div>
       <div class="itemWrap">
         <div class="cityAll">
-          <Checkbox v-model="ele.checked" @on-change="selectItem(index)">
+          <el-checkbox v-model="ele.checked" @on-change="selectItem(index)">
             <span class="city">该省份下所有城市</span>
-          </Checkbox>
+          </el-checkbox>
         </div>
         <div class="item" v-for="(item, k) in ele.cityList" :key="k">
-          <Checkbox v-model="item.checked" @on-change="selectChange(index)">
+          <el-checkbox v-model="item.checked" @on-change="selectChange(index)">
             <span class="city">{{ item.name }}</span>
-          </Checkbox>
+          </el-checkbox>
         </div>
       </div>
     </div>
